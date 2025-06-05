@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Novel Engine</title>
+    <style>
+      body {
+        margin:0;
+        background-color: rgb(65, 63, 63);
+      }
+
+      #content {
+        background-color: rgb(209, 205, 200);
+        max-width: 500px;
+        height: 100vh;
+        margin: 0 auto;
+        padding: 80px 60px;
+        box-shadow: 20px 20px 50px 10px rgb(65, 63, 63) inset;
+        font-size: 18px;
+        position: relative;
+      }
+      #maintext {
+        font-family: Georgia, "Times New Roman", Times, serif;
+        margin-bottom: 20px;
+        padding-top: 40px;
+      }
+      #options button {
+        display: block;
+        font-family: fantasy;
+        font-weight: bold;
+        margin: 20px auto;
+        font-size: 18px;
+        padding: 15px;
+        width: 350px;
+      }
+      #Res_score-display {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-family: fantasy;
+        font-size: 20px;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        border-radius: 5px;
+      }
+      #Ego_score-display {
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        font-family: fantasy;
+        font-size: 20px;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="content">
+      <div id="Res_score-display">Score: 0</div>
+      <div id="Ego_score-display">X: 0</div>
+      <div id="maintext"></div>
+      <div id="options"></div>
+    </div>
+  </body>
+
+  <script>
+    // Initialize score and variable X
+    let Res_Score = 0;
+    let Ego_Score = 0;
+    let res_factor = 0;
+    let ego_factor = 0;
+    let power = 0; //0 for billionaire friend, 1 for propaganda team
+    let cause = 0; //0 for immigrants, 1 for libs
+    let trait = 0; //1 for megalomaniac, -1 for self obsessed
+    let eSM = 0;
+    let rSM = 0;
+    let R1 = 0; //0 for R11, 1 for R12
+
+    const e11 = 2; //People in the right places
+    const r12 = 3; //State of emergency alarms the society
+    const e21 = -2; //rewriting history didnt look so good
+    const r22 = 2; //if you fight universities, they fight you back
+    const r3 = 2; //your dreams are met with a lot of resistance
+    const r4 = 3; //tariffs make people angry
+    const e5 = -3; //car sale/signal group was embarrassing
+    const r611 = -2; //that will shut up your critics
+    const r621 = -2; //that will shut up your critics
+    const r612 = 3; //that didnt work so well
+    const r622 = 3; //that didnt work so well
+    const e622 = -2; //that didnt work so well
+    const e71 = -4; //backing down is embarrassing
+    const r72 = +5; //not backing down makes people very scarred
+    const Res_End = 8;
+    const Ego_End = -2
+
+    //might still need those
+    const Y = 5;
+    const X_HIGH_THRESHOLD = 1;  // If X >= 1, it's "high"
+
+    const data = {
+      //character building rounds
+      segment1: { //1. choose your strength
+        id: "segment1",
+        text: "Choose your strength",
+        options: [
+          {
+            id: "segment2",
+            text: "Billionaire friend",
+            setPower: 0, // Sets strength to billionaire
+            setResFactor: 0.8,
+            scoreChange: () => ({Ego_Score: Ego_Score + 3}) // billionaire friend boosts your ego
+
+          },
+          {
+            id: "segment3",
+            text: "Propaganda Team",
+            setPower: 1, // Sets strength to propaganda team
+            setResFactor: 0.5 //Propagandamachine is very helpful
+          },
+        ],
+      },
+      segment2: {//Billionaire friend
+        id: "segment2",
+        text: "You are in good company! And having such a good friend boosted your Ego",
+        options: [{id: "segment4",text: "Ok"},],
+      },
+      segment3: {//Propaganda team
+        id: "segment3",
+        text: "You are in good company! A propaganda Team might help you out later...",
+        options: [{id: "segment4",text: "Ok"},],
+      },
+      segment4: { //2. choose your weakness
+        id: "segment4",
+        text: "chose your weakness",
+        options: [
+          {
+            id: "segment5",
+            text: "Megalomaniac",
+            setEgoFactor: 1,
+            setTrait: 1,
+            setESM: 3,
+            setRSM: 2,
+            scoreChange: () => ({Res_Score: Res_Score +2}) // people think you are dangerous
+          },
+          {
+            id: "segment6",
+            text: "Self obsessed",
+            setEgoFactor: 1.5,
+            setTrait: -1,
+            setESM: 3,
+            setRSM: 3
+          }
+        ],
+      },
+      segment5: {//Megalomaniac
+        id: "segment5",
+        text: "You are in good company. However, people think that you are dangerous. There seems to be some resistence building up...",
+        options: [{id: "segment7",text: "Ok"},],
+      },
+      segment6: {//Self obsessed
+        id: "segment6",
+        text: "You are in good company! Insecurity might be a bitch though...",
+        options: [{id: "segment7",text: "Ok"},],
+      },
+      segment7: { //3. choose your cause
+        id: "segment7",
+        text: "What are you against?",
+        options: [
+          {
+            id: "segment8",
+            text: "Immigrants!",
+            setCause: 0 //Immigrants
+          },
+          {
+            id: "segment9",
+            text: "The Libs!",
+            setCause: 1 //The libs
+          }
+        ],
+      },
+      segment8: {//Immigrants
+        id: "segment8",
+        text: "You are in good company. Mussolini ...",
+        options: [{id: "segment10",text: "Ok"},],
+      },
+      segment9: {//The Libs
+        id: "segment9",
+        text: "You are in good company. Putin ...",
+        options: [{id: "segment10",text: "Ok"},],
+      },
+
+      segment10: { //Round 1: Consolidate Power
+        id: "segment10",
+        text: "Let's consolidate your power! What should be do first?",
+        options: [
+          {
+            id: "segment11", //R11
+            text: "Dismantle the government!",
+            setR1: 0, //R11
+            scoreChange: () => ({Ego_Score: + ego_factor*e11})
+          },
+          {
+            id: "segment12", //R12
+            text: "Invoke a state of emergency!",
+            setR1: 1, //R12
+            scoreChange: () => ({Res_Score: + res_factor*r12})
+          }
+        ],
+      },
+      segment11: {//R11 Dismantle the Government
+        id: "segment11",
+        text: "You are in good company. And now you have people in the right places!",
+        options: [{id: "segment13", text: "Ok"},],
+      },
+      segment12: {//R12 Invoke a state of emergency
+        id: "segment12",
+        text: "You are in good company. And taking away power from the judges might come in handy later...",
+        options: [{id: "segment13",text: "Ok"},],
+      },
+
+      segment13: { //Round 2: Attack education!
+        id: "segment13",
+        text: "Well, well! Now its time to 'improve' the education system. We don't want people to learn the wrong things, do we?",
+        options: [
+          {
+            id: "segment14", //R21
+            text: "Rewrite history",
+            scoreChange: () => ({Ego_Score: + ego_factor*e21})
+          },
+          {
+            id: "segment15", //R22
+            text: "Attack universities",
+            scoreChange: () => ({Res_Score: + res_factor*r22})
+          }
+        ],
+      },
+      segment14: {//R21 Rewrite history
+        id: "segment14",
+        text: "You are in good company. However, you unintentionally some history you were proud of. The press is making fun of you. How embarrassing... ",
+        options: [{id: "segment16", text: "Ok"},],
+      },
+      segment15: {//R22 attack universities
+        id: "segment15",
+        text: "You are in good company. However, it seems like universities are organising themselves now. Resistance is growing...",
+        options: [{id: "segment16",text: "Ok"},],
+      },
+
+      segment16: { //Round 3a: Follow your dreams!
+        id: "segment16",
+        text: "You have been working so hard! And all for the good of the people! It is time to treat yourself",
+        options: [
+          {
+            id: "segment17", //R31
+            text: "Do something for your cause",
+            scoreChange: () => ({Res_Score: + res_factor*(r3+rSM), Ego_Score: + ego_factor*eSM})
+          },
+          {
+            id: "segment18", //R32
+            text: "Do something for yourself",
+            scoreChange: () => ({Res_Score: + res_factor*(r3+rSM), Ego_Score: + ego_factor*eSM})
+          }
+        ],
+      },
+      segment17: {//R31 Do something for your cause
+        id: "segment17",
+        text: () => cause < 1
+          ? "Torture Prison"
+          : "Stop DEI",
+        options: [{id: "segment19", text: "Ok"},],
+      },
+      segment18: {//Do something for yourself
+        id: "segment18",
+        text: () => trait < 1
+          ? "You show your virility"
+          : "You propose to invade Canada",
+        options: [{id: "segment19",text: "Ok"},],
+      },
+
+      segment19: { //Round 4: Tariffs!
+        id: "segment19",
+        text: "Your country has been suffering so hard!",
+        options: [
+          {
+            id: "segment20", //R4
+            text: "Time to put tariffs on everyone!",
+            scoreChange: () => ({Res_Score: + res_factor*r4})
+          },
+        ],
+      },
+      segment20: {//R4 Tariffs!
+        id: "segment20",
+        text: "You are in good company. However, with rising prices, resistance is growing too...",
+        options: [{id: "segment21", text: "Ok"},],
+      },
+
+      segment21: {//R5 Bad event
+        id: "segment21",
+        text: () => power <1
+          ? "Your billionaire friend is calling in a favour. He wants you to promote his cars. You have to do a car sale on your lawn. It reminds you of your days as a washed up salesman..."
+          : "Your subordinates have been caught using an unsafe messanger service. Now you have to defend these idiots. Seems like there is noone you can truly rely on ...",
+        options: [{id: "segment22", text: "Ok", scoreChange: () => ({Ego_Score: + ego_factor*e5})}],
+      },
+
+      segment22: { //R6: Your critics won't shut up
+        id: "segment22",
+        text: "Your critics won't shut up",
+        options: [
+          {
+            id: "segment23", //R61 Go after the free press
+            text: "Go after the free press",
+            scoreChange: () => ({Res_Score: + res_factor*R1*r612 + (-(R1-1))*(1/res_factor*r611), Ego_Score: + ego_factor*e622*R1})
+          },
+          {
+            id: "segment24", //R62 Go after the judges
+            text: "Go after the judges",
+            scoreChange: () => ({Res_Score: + res_factor*(-(R1-1))*r622 + R1*(1/res_factor*r621), Ego_Score: + ego_factor*e622*(-(R1-1))})
+          }
+        ],
+      },
+      segment23: {//R61 Go after the free press
+        id: "segment23",
+        text: () => R1 < 1
+          ? "That will shut up your critics. Good thing you have dismantled the government"
+          : "That didn't work so well",
+        options: [{id: "segment25", text: "Ok"},],
+      },
+      segment24: {//R62 Go after the judges
+        id: "segment24",
+        text: () => R1 > 0
+          ? "That will shut up your critics. Good thing you took the power from the judges"
+          : "That didn't work so well",
+        options: [{id: "segment25",text: "Ok"},],
+      },
+
+      segment25: { //Round 7: Economic crash
+        id: "segment25",
+        text: "Well, well! Seems like your tariffs have caused a major economic crash. What to do?",
+        options: [
+          {
+            id: "segment26", //R71
+            text: "Back down",
+            scoreChange: () => ({Ego_Score: + ego_factor*e71})
+          },
+          {
+            id: "segment27", //R22
+            text: "Don't back down",
+            scoreChange: () => ({Res_Score: + res_factor*r72})
+          }
+        ],
+      },
+      segment26: {//R71
+        id: "segment26",
+        text: "Well, well, Wall Street has made up a nick name for you know, the are calling you TACO. I wonder what that stands for...",
+        options: [{id: "segment28", text: "Ok"},],
+      },
+      segment27: {//R72
+        id: "segment27",
+        text: "People are very scared. You might be in for a tough ride...",
+        options: [{id: "segment28",text: "Ok"},],
+      },
+
+      segment28: {// Round 8
+        id: "segment28",
+        text: () => Res_Score <= Res_End
+          ? "You have had enough"
+          : "You are spiraling",
+        options: () => Res_Score <= Res_End
+          ? [  //You had enough options
+              {
+                id: "segment_Res_low",
+                text: "Choose violence 1.",
+                scoreChange: () => ({Res_Score: + res_factor*2})
+              },
+              {
+                id: "segment_Res_low",
+                text: "Choose violence 2.",
+                scoreChange: () => ({Res_Score: + res_factor*2})
+              }
+            ]
+          : [  //You are spiraling options
+              {
+                id: "segment_Res_high",
+                text: "Spiral 1",
+              },
+              {
+                id: "segment_Res_high",
+                text: "Spiral 2.",
+              }
+            ]
+      },
+      segment_Res_low: {
+        id: "segment_Res_low",
+        text: () => Ego_Score <= Ego_End //E1 and E2
+          ? "Well, well. Seems like you finished off your last critic. You made it! You are THE strongman. You might also be miserable - but who said power doesn't come with a price?"
+          : "Congrats, you started World War 3! That wasn't the plan? Weeeeell, you might have overdone it a little with the violence part. Too bad war never ends well for its leaders...",
+        options: []
+      },
+      segment_Res_high: {
+        id: "segment_Res_high",
+        text: () => Ego_Score <= Ego_End //E3 and E4
+          ? "Weeeell, I think you have embarrassed yourself enough. And so do the people. You have been impeached. Seems like you didn't have it in you to become a strongman. Better luck next time!"
+          : "Congrats, you started a civil war! Well, don't blame me for that. Tensions are high nad you might have gone a liiiiitle crazy, what did you think would happen? However, I know enough about the future to tell you that you will get shot very soon. Anyway... better luck next time ",
+        options: []
+      },
+    };
+
+    window.onload = loadFirstpage;
+
+    function updateDisplays() {
+    document.querySelector("#Res_score-display").textContent = `Res: ${Math.round(Res_Score * 100) / 100}`;
+    document.querySelector("#Ego_score-display").textContent = `Ego: ${Math.round(Ego_Score * 100) / 100}`;
+    }
+
+    function loadFirstpage() {
+      Res_Score = 0; // Reset score when starting
+      Ego_Score = 0; // Reset variable X
+      updateDisplays();
+      document.querySelector("#maintext").innerHTML = data.segment1.text;
+      generateButtonsFromIds(data.segment1.options, "options");
+    }
+
+    function loadNextpage(id, scoreChange = () => ({})) {
+      const changes = scoreChange();
+      if (changes.Res_Score !== undefined) Res_Score += changes.Res_Score;
+      if (changes.Ego_Score !== undefined) Ego_Score += changes.Ego_Score;
+      updateDisplays();
+
+        // Handle dynamic text/options
+        const segment = data[id];
+
+        // Get text (handle both function and static text)
+        const text = typeof segment.text === 'function'
+            ? segment.text()
+            : segment.text;
+
+        // Get options (handle both function and static options)
+        const options = typeof segment.options === 'function'
+            ? segment.options()
+            : segment.options;
+
+        document.querySelector("#maintext").innerHTML = text;
+        generateButtonsFromIds(options, "options");
+    }
+
+    function generateButtonsFromIds(idArray, containerId) {
+      const container = document.getElementById(containerId);
+
+      if (!container) {
+        console.error("Container element not found");
+        return;
+      }
+      container.innerHTML = "";
+
+      idArray.forEach((option) => {
+        const button = document.createElement("button");
+        button.textContent = option.text;
+        button.setAttribute("data-id", option.id);
+
+        button.addEventListener("click", () => {
+          // Apply all variable changes
+          if (option.setEgoFactor !== undefined) ego_factor = option.setEgoFactor;
+          if (option.setResFactor !== undefined) res_factor = option.setResFactor;
+          if (option.setPower !== undefined) power = option.setPower;
+          if (option.setCause !== undefined) cause = option.setCause;
+          if (option.setTrait !== undefined) trait = option.setTrait;
+          if (option.setESM !== undefined) eSM = option.setESM;
+          if (option.setRSM !== undefined) rSM = option.setRSM;
+          if (option.setR1 !== undefined) R1 = option.setR1;
+
+          // Get score change function (default to zero if none)
+          const scoreChangeFn = option.scoreChange || (() => 0);
+
+          console.log(`Button clicked for ID: ${option.id}`);
+          loadNextpage(option.id, scoreChangeFn);
+        });
+
+        container.appendChild(button);
+      });
+    }
+  </script>
+</html>
