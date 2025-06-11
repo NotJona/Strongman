@@ -94,8 +94,8 @@
     const e622 = -2; //that didnt work so well
     const e71 = -4; //backing down is embarrassing
     const r72 = +5; //not backing down makes people very scarred
-    const Res_End = 8;
-    const Ego_End = -2
+    const Res_End = 7;
+    const Ego_End = 0
 
     //might still need those
     const Y = 5;
@@ -115,7 +115,7 @@
       },
       segment1a: { //
         id: "segment1a",
-        text: "Me? I'm the director of this little show...your guide, so to speak. I will show you the ways of power. " +
+        text: "Me? I'm the director of this little show ... your guide, so to speak. I will show you the ways of power. " +
                 "<br><br>I even took on a fitting form - don't you think so?",
         options: [
           {
@@ -153,7 +153,7 @@
         text: "First, we have to get you into character. " +
                 "You have to decide which flavor of strongman you want to be." +
                 " History gives us so many options to pick from. You are not my first student, you see?" +
-                " <br><br>  So first things first: Choose your strength.",
+                " <br><br>  So first things first: Choose your strength!",
         options: [
           {
             id: "segment2",
@@ -181,8 +181,8 @@
       segment3: {//Propaganda team
         id: "segment3",
         text: "A wise choice! He who controls the media controls reality itself. My student, Putin, for example, understands this very well. Of course," +
-                "simply owning the media would be even better - Berlusconi would know all about that..." +
-                "<br><br> Well, we must be happy with what we have. And a propaganda team comes in handy when one has to keep down Resistance...",
+                " simply owning the media would be even better - Berlusconi would know all about that..." +
+                "<br><br> Well, we must be happy with what we have. And a propaganda team surely comes in handy when one has to keep down Resistance...",
         options: [{id: "segment4",text: "Ok"},],
       },
       segment4: { //2. choose your weakness
@@ -210,24 +210,28 @@
       },
       segment5: {//Megalomaniac
         id: "segment5",
-        text: "Ah, the good old Megalomaniac. The man who wants it all - and then some! A narcissist through and through. " +
-                "Quite a traditional choice. You are the best and only deserve the best: " +
-                "Lavish parades, Louis 14th style apartments, fancy titles. My student Idi Amin Dada called himself: " +
+        text: "Ah, the good old Megalomaniac. You see yourself as godsent, larger than life. You lost every sense of reality. " +
+                "Quite a traditional choice. " +
+                "Lavish parades, Louis 14th style apartments, fancy titles - you want it all. My student, Idi Amin Dada, called himself: " +
                 "<br><br>'His Excellency, President for Life, Field Marshal Al Hadji Doctor Idi Amin Dada, VC, DSO, MC, " +
                 "Lord of All the Beasts of the Earth and Fishes of the Seas and Conqueror of the British Empire " +
                 "in Africa in General and Uganda in Particular.'" +
-                "<br><br> Glorious title! But ... maybe you start with calling yourself king. Note though that people think that you are dangerous. " +
+                "<br><br> Glorious title! But ... maybe you start with calling yourself 'king'. Note though that people think you are dangerous. " +
                 "There seems to be some resistence building up...",
         options: [{id: "segment7",text: "Ok"},],
       },
       segment6: {//Self obsessed
         id: "segment6",
-        text: "You are in good company! Insecurity might be a bitch though...",
+        text: "You are a narcissist through and through. You are terribly insecure. How fun!" +
+                "<br><br>  You are in good company! Many of my students had a very fragile ego. Dear Mussolini had to check the news obsessively just to make sure" +
+                " nobody talked bad about him.  Good thing you don't read the news. Instead you are on social media...  " +
+                "<br><br> Your fragile ego, though, makes you react much more volatile when confronted by negative events - let's hope there won't be too many!",
         options: [{id: "segment7",text: "Ok"},],
       },
       segment7: { //3. choose your cause
         id: "segment7",
-        text: "What are you against?",
+        text: "Lastly, you need a cause! Something to bring the people together. After all, your country is suffering and YOU know who's fault that is!" +
+                " What - or rather who - are you against?",
         options: [
           {
             id: "segment8",
@@ -236,20 +240,35 @@
           },
           {
             id: "segment9",
-            text: "The Libs!",
+            text: "The Liberals!",
             setCause: 1 //The libs
           }
         ],
       },
       segment8: {//Immigrants
         id: "segment8",
-        text: "You are in good company. Mussolini ...",
+        text: "Immigrants - such an unoriginal choice. Alas, never change a winning team! <br><br> The fear of the unknown, of 'being replaced' - a hundred years ago, Mussolini" +
+                "employed this exact parole, saying that Italy was under attack, invaded by African immigrants that would surely replace Italians. Funny, how " +
+                "some things never go out of fashion.",
         options: [{id: "segment10",text: "Ok"},],
       },
       segment9: {//The Libs
         id: "segment9",
-        text: "You are in good company. Putin ...",
-        options: [{id: "segment10",text: "Ok"},],
+        text: "The Liberals! The Universities, the free press, women, queer people, leftists. Take your pick! The 'enemy within' always worked wonders." +
+                "<br><br> I once had a German student who hated queer people (among others). Germany was quite progressive back then, it even had a movement to legalize homosexuality." +
+                " But as soon as Adolf came to power he closed their institutes and burned their books. And it worked! Who today knows about Magnus Hirschfeld?" +
+                "<br><br> Of course you would never go after gay people (any time soon). Transgender folks though...",
+        options: [{id: "segment9a",text: "Ok"},],
+      },
+            segment9a: { //
+        id: "segment9a",
+        text: "Now, now! The stage is set and your character has been built. You have been elected president and it is time to set your plans in motion.",
+        options: [
+          {
+            id: "segment10",
+            text: "Okay."
+          }
+        ],
       },
 
       segment10: { //Round 1: Consolidate Power
@@ -299,7 +318,8 @@
       },
       segment14: {//R21 Rewrite history
         id: "segment14",
-        text: "You are in good company. However, you unintentionally some history you were proud of. The press is making fun of you. How embarrassing... ",
+        text: "You are in good company. However, your 'corrections' were done rather clumsily and you deleted the picture of a " +
+                "bomber because it was called 'Enola Gay'. The press is making fun of you. How embarrassing... ",
         options: [{id: "segment16", text: "Ok"},],
       },
       segment15: {//R22 attack universities
@@ -327,15 +347,21 @@
       segment17: {//R31 Do something for your cause
         id: "segment17",
         text: () => cause < 1
-          ? "Torture Prison"
-          : "Stop DEI",
+          ? "You send a group of immigrants to a torture prison in El Salvadore. " +
+                "<br><br> While this really helps your ego, you might have ignored due process. Unsurprisingly, resistance rises."
+          : "You stop all DEI initiatives. While you are at it, you also start cleansing government institutions from all kinds of 'waste, fraud and abuse'. " +
+                "<br><br> Your followers praise you, but thousands of people lose their jobs and social security." +
+                " Tensions keep rising...",
         options: [{id: "segment19", text: "Ok"},],
       },
       segment18: {//Do something for yourself
         id: "segment18",
         text: () => trait < 1
-          ? "You show your virility"
-          : "You propose to invade Canada",
+          ? "You release your own crypto currency. Again. Abu Dhabi promptly invests two billion dollars in your stable coin. " +
+                "75% of the returns on this money go directly to you, hence, you do feel quite good about yourself. However, some call this" +
+                " 'corruption' and resistance keeps rising significantly."
+          : "You propose to invade Canada. And Greenland. You imagine yourself as the king of a united north america. For some reason, the rest " +
+                " of the world doesn't appreciate your visionary ideas...",
         options: [{id: "segment19",text: "Ok"},],
       },
 
@@ -359,7 +385,7 @@
       segment21: {//R5 Bad event
         id: "segment21",
         text: () => power <1
-          ? "Your billionaire friend is calling in a favour. He wants you to promote his cars. You have to do a car sale on your lawn. It reminds you of your days as a washed up salesman..."
+          ? "Your billionaire friend is calling in a favour. He wants you to promote his cars. You have to do a car sale on your own lawn. It reminds you of your days as a washed-up salesman..."
           : "Your subordinates have been caught using an unsafe messanger service. Now you have to defend these idiots. Seems like there is noone you can truly rely on ...",
         options: [{id: "segment22", text: "Ok", scoreChange: () => ({Ego_Score: + ego_factor*e5})}],
       },
@@ -384,20 +410,20 @@
         id: "segment23",
         text: () => R1 < 1
           ? "That will shut up your critics. Good thing you have dismantled the government"
-          : "That didn't work so well",
+          : "That didn't work so well. You might have made the situation worse...",
         options: [{id: "segment25", text: "Ok"},],
       },
       segment24: {//R62 Go after the judges
         id: "segment24",
         text: () => R1 > 0
           ? "That will shut up your critics. Good thing you took the power from the judges"
-          : "That didn't work so well",
+          : "That didn't work so well. You might have made the situation worse...",
         options: [{id: "segment25",text: "Ok"},],
       },
 
       segment25: { //Round 7: Economic crash
         id: "segment25",
-        text: "Well, well! Seems like your tariffs have caused a major economic crash. What to do?",
+        text: "Seems like your tariffs have caused a major economic crash. What to do?",
         options: [
           {
             id: "segment26", //R71
@@ -425,44 +451,52 @@
       segment28: {// Round 8
         id: "segment28",
         text: () => Res_Score <= Res_End
-          ? "You have had enough"
+          ? "You have had enough. Time to choose violence!"
           : "You are spiraling",
         options: () => Res_Score <= Res_End
           ? [  //You had enough options
               {
                 id: "segment_Res_low",
-                text: "Choose violence 1.",
+                text: "Time to incite some riots and then 'restore law and order' by sending in the military.",
                 scoreChange: () => ({Res_Score: + res_factor*2})
               },
               {
                 id: "segment_Res_low",
-                text: "Choose violence 2.",
+                text: "Time to organize a 'parade to honour our troops' (on your own birthday of course). " +
+                        "And once the tanks are in the capital - why not keep them there? ",
                 scoreChange: () => ({Res_Score: + res_factor*2})
               }
             ]
           : [  //You are spiraling options
               {
                 id: "segment_Res_high",
-                text: "Spiral 1",
+                text: "You pick a fight with the richest man in the world. It escalades quite badly.",
               },
               {
                 id: "segment_Res_high",
-                text: "Spiral 2.",
+                text: "You generate a picture of yourself as the pope. Might be time to declare yourself as 'lord and saviour'",
               }
             ]
       },
       segment_Res_low: {
         id: "segment_Res_low",
         text: () => Ego_Score <= Ego_End //E1 and E2
-          ? "Well, well. Seems like you finished off your last critic. You made it! You are THE strongman. You might also be miserable - but who said power doesn't come with a price?"
-          : "Congrats, you started World War 3! That wasn't the plan? Weeeeell, you might have overdone it a little with the violence part. Too bad war never ends well for its leaders...",
+          ? "Well, well. Seems like you finished off your last critic. You made it! You are THE strongman. " +
+                "You might also be miserable - but who said power doesn't come with a price?"
+          : "Congrats, you started a civil war! Well, don't blame me for that. Tensions are high and " +
+                "you might have gone a liiiiitle crazy, what did you think would happen? However, " +
+                "I know enough about the future to tell you that you will get shot very soon. Anyway... better luck next time ",
         options: []
       },
       segment_Res_high: {
         id: "segment_Res_high",
         text: () => Ego_Score <= Ego_End //E3 and E4
-          ? "Weeeell, I think you have embarrassed yourself enough. And so do the people. You have been impeached. Seems like you didn't have it in you to become a strongman. Better luck next time!"
-          : "Congrats, you started a civil war! Well, don't blame me for that. Tensions are high nad you might have gone a liiiiitle crazy, what did you think would happen? However, I know enough about the future to tell you that you will get shot very soon. Anyway... better luck next time ",
+          ? "Weeeell, I think you have embarrassed yourself enough. " +
+                "And so do the people. You have been impeached. Seems like you didn't have it in you to become a strongman. " +
+                "Better luck next time!"
+          : "Congrats, you started a civil war! Well, don't blame me for that. " +
+                "Tensions are high nad you might have gone a liiiiitle crazy, what did you think would happen? " +
+                "However, I know enough about the future to tell you that you will get shot very soon. Anyway... better luck next time ",
         options: []
       },
     };
