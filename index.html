@@ -100,9 +100,50 @@
     const X_HIGH_THRESHOLD = 1;  // If X >= 1, it's "high"
 
     const data = {
-      //character building rounds
-      segment1: { //1. choose your strength
+      //introduction
+      segment1: { //
         id: "segment1",
+        text: "Welcome! Come one, come all! Join the show. On today's program: The strongman! The autoritarian leader, the aspiring dictator, the one to rule power itself.",
+        options: [
+          {
+            id: "segment1a",
+            text: "Who are you? What is this?"
+          }
+        ],
+      },
+      segment1a: { //
+        id: "segment1a",
+        text: "Me? I'm the director of this little show... your guide so to speak. I will show you the ways of power. I even took on a fitting form - don't you think so?",
+        options: [
+          {
+            id: "segment1b",
+            text: "Haha, very funny. Then if this is a 'show', what am I doing here?"
+          }
+        ],
+      },
+      segment1b: { //
+        id: "segment1b",
+        text: "Well, well, any play needs actors, don't you know? And as it turns out, I'm short of one. So join me on my stage! I will be your director - and you will be my player.",
+        options: [
+          {
+            id: "segment1c",
+            text: "Do I have a choice?"
+          }
+        ],
+      },
+      segment1c: { //
+        id: "segment1c",
+        text: "More choice than I have. You will have plenty of choices, actually. But a word of advice: your actoins have consequences. So choose wisely. Results may not always be what you expect. And maybe don't value yourself too much... Anyway! Welcome, welcome again. Let us begin!",
+        options: [
+          {
+            id: "segment1d",
+            text: "Okay."
+          }
+        ],
+      },
+      //character building rounds
+      segment1d: { //1. choose your strength
+        id: "segment1d",
         text: "Choose your strength",
         options: [
           {
