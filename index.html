@@ -484,19 +484,20 @@
           ? "Well, well. Seems like you finished off your last critic. You made it! You are THE strongman. " +
                 "You might also be miserable - but who said power doesn't come with a price?"
           : "Congrats, you started a civil war! Well, don't blame me for that. Tensions are high and " +
-                "you might have gone a liiiiitle crazy, what did you think would happen? However, " +
-                "I know enough about the future to tell you that you will get shot very soon. Anyway... better luck next time ",
+                "you may have gone a liiiiittle crazy. Might be better to keep down your ego a bit. " +
+                "<br><br>Anyway, I know enough about the future to tell you that you will get shot very soon... better luck next time. ",
         options: []
       },
       segment_Res_high: {
         id: "segment_Res_high",
-        text: () => Ego_Score <= Ego_End //E3 and E4
+        text: () => Ego_Score <= Ego_End //E3 and E2
           ? "Weeeell, I think you have embarrassed yourself enough. " +
-                "And so do the people. You have been impeached. Seems like you didn't have it in you to become a strongman. " +
+                "And so do the people. You have been impeached. Seems like you didn't have it in you to become a strongman. Might be a good idea to keep an " +
+                "eye on resistence. " +
                 "Better luck next time!"
           : "Congrats, you started a civil war! Well, don't blame me for that. " +
-                "Tensions are high nad you might have gone a liiiiitle crazy, what did you think would happen? " +
-                "However, I know enough about the future to tell you that you will get shot very soon. Anyway... better luck next time ",
+                "Tensions are high and you may have gone a liiiiittle crazy. Might be better to keep down your ego a bit. " +
+                "<br><br>Anyway, I know enough about the future to tell you that you will get shot very soon... better luck next time. ",
         options: []
       },
     };
