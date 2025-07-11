@@ -9,7 +9,7 @@
             margin: 0;
             background:
                 linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
-                url('backdrop3.jpg') no-repeat center center fixed;
+                url('backdrop_final.jpg') no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
             color: white;
@@ -19,9 +19,8 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            /* New positioning */
-            justify-content: flex-end; /* Aligns children to bottom */
-            padding-bottom: 100px; /* Adds space at bottom */
+            justify-content: flex-end;
+            padding-bottom: 100px;
         }
 
         #content {
@@ -31,9 +30,8 @@
             padding: 20px;
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
-            /* Changed from margin:auto to push down */
-            margin-top: auto; /* Pushes to bottom */
-            margin-bottom: 30px; /* Additional space from bottom */
+            margin-top: auto;
+            margin-bottom: 30px;
         }
         #maintext {
             font-size: 20px;
@@ -61,21 +59,87 @@
             background-color: white;
         }
 
-        #Res_score-display, #Ego_score-display {
+        .score-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .score-bar-container {
+            width: 48%;
+            margin-bottom: 5px;
+        }
+
+        .score-label {
             font-family: fantasy;
-            font-size: 20px;
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 8px 15px;
-            border-radius: 5px;
-            display: inline-block;
-            margin: 5px;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .score-bar {
+            height: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-bar-center {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background-color: white;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+            position: absolute;
+            bottom: 0;
+        }
+
+        #Res_bar-fill {
+            background-color: #ff6b6b;
+            left: 50%;
+            width: 0%;
+        }
+
+        #Ego_bar-fill {
+            background-color: #feca57;
+            left: 50%;
+            width: 0%;
+        }
+
+        .score-value {
+            font-family: fantasy;
+            font-size: 14px;
+            margin-top: 3px;
         }
     </style>
   </head>
   <body>
     <div id="content">
-      <div id="Res_score-display"></div>
-      <div id="Ego_score-display"></div>
+      <div class="score-container">
+        <div class="score-bar-container">
+            <div class="score-label">Resistance</div>
+            <div class="score-bar">
+                <div class="score-bar-center"></div>
+                <div id="Res_bar-fill" class="score-bar-fill"></div>
+            </div>
+            <div id="Res_score-value" class="score-value">0</div>
+        </div>
+        <div class="score-bar-container">
+            <div class="score-label">Ego</div>
+            <div class="score-bar">
+                <div class="score-bar-center"></div>
+                <div id="Ego_bar-fill" class="score-bar-fill"></div>
+            </div>
+            <div id="Ego_score-value" class="score-value">0</div>
+        </div>
+      </div>
       <div id="maintext"></div>
       <div id="options"></div>
     </div>
@@ -89,11 +153,12 @@
     let ego_factor = 0;
     let power = 0; //0 for billionaire friend, 1 for propaganda team
     let cause = 0; //0 for immigrants, 1 for libs
-    let trait = 0; //1 for megalomaniac, -1 for self obsessed
+    let trait = 0; //1 for megalomaniac, 0 for self obsessed
+    let R1 = 0; //0 for R11, 1 for R12
     let eSM = 0;
     let rSM = 0;
-    let R1 = 0; //0 for R11, 1 for R12
-
+    const e0 = 3;
+    const r0 = 2;
     const e11 = 2; //People in the right places
     const r12 = 3; //State of emergency alarms the society
     const e21 = -2; //rewriting history didnt look so good
@@ -174,7 +239,7 @@
             text: "Billionaire friend",
             setPower: 0, // Sets strength to billionaire
             setResFactor: 0.8,
-            scoreChange: () => ({Ego_Score: Ego_Score + 3}) // billionaire friend boosts your ego
+            scoreChange: () => ({Ego_Score: Ego_Score + e0}) // billionaire friend boosts your ego
 
           },
           {
@@ -210,13 +275,13 @@
             setTrait: 1,
             setESM: 3,
             setRSM: 2,
-            scoreChange: () => ({Res_Score: Res_Score +2}) // people think you are dangerous
+            scoreChange: () => ({Res_Score: Res_Score +r0}) // people think you are dangerous
           },
           {
             id: "segment6",
             text: "Self obsessed",
             setEgoFactor: 1.5,
-            setTrait: -1,
+            setTrait: 0,
             setESM: 3,
             setRSM: 3
           }
@@ -518,14 +583,47 @@
 
     window.onload = loadFirstpage;
 
+        window.onload = loadFirstpage;
+
     function updateDisplays() {
-    document.querySelector("#Res_score-display").textContent = `Res: ${Math.round(Res_Score * 100) / 100}`;
-    document.querySelector("#Ego_score-display").textContent = `Ego: ${Math.round(Ego_Score * 100) / 100}`;
+        // Resistance bar (0 to 15)
+        const resPosPercentage = Math.min(100, Math.max(0, (Res_Score / 20) * 100));
+        const resNegPercentage = Math.min(100, Math.max(0, (-Res_Score / 5) * 100));
+
+        // Ego bar (-5 to 0 to 15)
+        const egoPosPercentage = Math.min(100, Math.max(0, (Ego_Score / 20) * 100));
+        const egoNegPercentage = Math.min(100, Math.max(0, (-Ego_Score / 5) * 100));
+
+        // Update Resistance bar
+        if (Res_Score >= 0) {
+            document.querySelector("#Res_bar-fill").style.left = "50%";
+            document.querySelector("#Res_bar-fill").style.width = `${resPosPercentage}%`;
+            document.querySelector("#Res_bar-fill").style.backgroundColor = "#ff6b6b";
+        } else {
+            document.querySelector("#Res_bar-fill").style.left = `${50 - resNegPercentage}%`;
+            document.querySelector("#Res_bar-fill").style.width = `${resNegPercentage}%`;
+            document.querySelector("#Res_bar-fill").style.backgroundColor = "#ff9e9e"; // Lighter red for negative
+        }
+
+        // Update Ego bar
+        if (Ego_Score >= 0) {
+            document.querySelector("#Ego_bar-fill").style.left = "50%";
+            document.querySelector("#Ego_bar-fill").style.width = `${egoPosPercentage}%`;
+            document.querySelector("#Ego_bar-fill").style.backgroundColor = "#feca57";
+        } else {
+            document.querySelector("#Ego_bar-fill").style.left = `${50 - egoNegPercentage}%`;
+            document.querySelector("#Ego_bar-fill").style.width = `${egoNegPercentage}%`;
+            document.querySelector("#Ego_bar-fill").style.backgroundColor = "#ffe0a3"; // Lighter yellow for negative
+        }
+
+        // Update numeric values
+        document.querySelector("#Res_score-value").textContent = `${Math.round(Res_Score * 100) / 100}`;
+        document.querySelector("#Ego_score-value").textContent = `${Math.round(Ego_Score * 100) / 100}`;
     }
 
     function loadFirstpage() {
-      Res_Score = 0; // Reset score when starting
-      Ego_Score = 0; // Reset variable X
+      Res_Score = 0;
+      Ego_Score = 0;
       updateDisplays();
       document.querySelector("#maintext").innerHTML = data.segment1.text;
       generateButtonsFromIds(data.segment1.options, "options");
@@ -537,30 +635,17 @@
       if (changes.Ego_Score !== undefined) Ego_Score += changes.Ego_Score;
       updateDisplays();
 
-        // Handle dynamic text/options
-        const segment = data[id];
+      const segment = data[id];
+      const text = typeof segment.text === 'function' ? segment.text() : segment.text;
+      const options = typeof segment.options === 'function' ? segment.options() : segment.options;
 
-        // Get text (handle both function and static text)
-        const text = typeof segment.text === 'function'
-            ? segment.text()
-            : segment.text;
-
-        // Get options (handle both function and static options)
-        const options = typeof segment.options === 'function'
-            ? segment.options()
-            : segment.options;
-
-        document.querySelector("#maintext").innerHTML = text;
-        generateButtonsFromIds(options, "options");
+      document.querySelector("#maintext").innerHTML = text;
+      generateButtonsFromIds(options, "options");
     }
 
     function generateButtonsFromIds(idArray, containerId) {
       const container = document.getElementById(containerId);
-
-      if (!container) {
-        console.error("Container element not found");
-        return;
-      }
+      if (!container) return;
       container.innerHTML = "";
 
       idArray.forEach((option) => {
@@ -569,7 +654,6 @@
         button.setAttribute("data-id", option.id);
 
         button.addEventListener("click", () => {
-          // Apply all variable changes
           if (option.setEgoFactor !== undefined) ego_factor = option.setEgoFactor;
           if (option.setResFactor !== undefined) res_factor = option.setResFactor;
           if (option.setPower !== undefined) power = option.setPower;
@@ -579,10 +663,7 @@
           if (option.setRSM !== undefined) rSM = option.setRSM;
           if (option.setR1 !== undefined) R1 = option.setR1;
 
-          // Get score change function (default to zero if none)
           const scoreChangeFn = option.scoreChange || (() => 0);
-
-          console.log(`Button clicked for ID: ${option.id}`);
           loadNextpage(option.id, scoreChangeFn);
         });
 
